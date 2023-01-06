@@ -13,6 +13,8 @@ export default class Joke_list extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.state = { jokes: JSON.parse(window.localStorage.getItem("jokes") || "[]"),
     loading: false};
+    this.seenJokes = new Set(this.state.jokes.map(j=>j.joke))
+    console.log(this.seenJokes);
   }
   handleClick() {
     this.setState({loading: true}, this.getJokes);
@@ -21,10 +23,10 @@ export default class Joke_list extends React.Component {
   componentDidMount() {
     if(this.state.jokes.length === 0) {
       this.getJokes();
-    }
-    
+    }  
   }
   async getJokes(){
+    this.setState({loading: true})
     let jokes = [];
     while(jokes.length < this.props.numberJokes) {
       let res = await axios.get(`https://icanhazdadjoke.com/`, 
@@ -32,6 +34,7 @@ export default class Joke_list extends React.Component {
       jokes.push({id:uuid(),joke : res.data.joke, votes: 0});
     }
     this.setState(st=>({
+      loading: false,
       jokes: [...st.jokes, ...jokes]
     }),
       ()=> window.localStorage.setItem("jokes", JSON.stringify(this.state.jokes))
