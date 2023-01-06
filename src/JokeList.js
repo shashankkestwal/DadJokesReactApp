@@ -10,7 +10,12 @@ export default class Joke_list extends React.Component {
   }
   constructor(props) {
     super(props);
-    this.state = { jokes: JSON.parse(window.localStorage.getItem("jokes") || "[]") };
+    this.handleClick = this.handleClick.bind(this);
+    this.state = { jokes: JSON.parse(window.localStorage.getItem("jokes") || "[]"),
+    loading: false};
+  }
+  handleClick() {
+    this.setState({loading: true}, this.getJokes);
   }
 
   componentDidMount() {
@@ -22,12 +27,15 @@ export default class Joke_list extends React.Component {
   async getJokes(){
     let jokes = [];
     while(jokes.length < this.props.numberJokes) {
-      const API_KEY = "a7dc5031f14fac2fe27f061f0d68"
       let res = await axios.get(`https://icanhazdadjoke.com/`, 
           {headers:{ Accept: "application/json"}});
       jokes.push({id:uuid(),joke : res.data.joke, votes: 0});
     }
-    this.setState({jokes : jokes});
+    this.setState(st=>({
+      jokes: [...st.jokes, ...jokes]
+    }),
+      ()=> window.localStorage.setItem("jokes", JSON.stringify(this.state.jokes))
+    );
     window.localStorage.setItem(
       "jokes",
       JSON.stringify(jokes))
@@ -36,12 +44,23 @@ export default class Joke_list extends React.Component {
   handleVote(id, delta) {
     this.setState(
       st => ({
+        loading: false,
         jokes: st.jokes.map(j =>
           j.id === id ? { ...j, votes: j.votes + delta } : j
         )
-      }))
+      }), 
+      ()=> window.localStorage.setItem("jokes", JSON.stringify(this.state.jokes))
+      )
   }
   render() {
+    if(this.state.loading) {
+      return(
+            <div className="spinner">
+              <i className="far fa-8x fa-laugh fa-spin" />
+              <div className="JokeList-title">Loading ...</div>
+            </div>
+            )
+    }
 
     return (
       <div className="JokeList">
