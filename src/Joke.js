@@ -3,15 +3,15 @@ import "./Joke.css"
 
 export default class Joke extends React.Component {
   getColor() {
-    if (this.props.votes >= 15) {
+    if (this.props.votes >= 10) {
       return "#4CAF50";
-    } else if (this.props.votes >= 12) {
+    } else if (this.props.votes >= 8) {
       return "#8BC34A";
-    } else if (this.props.votes >= 9) {
-      return "#CDDC39";
     } else if (this.props.votes >= 6) {
+      return "#CDDC39";
+    } else if (this.props.votes >= 4) {
       return "#FFEB3B";
-    } else if (this.props.votes >= 3) {
+    } else if (this.props.votes >= 2) {
       return "#FFC107";
     } else if (this.props.votes >= 0) {
       return "#FF9800";
@@ -20,15 +20,15 @@ export default class Joke extends React.Component {
     }
   }
   getEmoji() {
-    if (this.props.votes >= 15) {
+    if (this.props.votes >= 10) {
       return "em em-rolling_on_the_floor_laughing";
-    } else if (this.props.votes >= 12) {
+    } else if (this.props.votes >= 8) {
       return "em em-laughing";
-    } else if (this.props.votes >= 9) {
-      return "em em-smiley";
     } else if (this.props.votes >= 6) {
+      return "em em-smiley";
+    } else if (this.props.votes >= 4) {
       return "em em-slightly_smiling_face";
-    } else if (this.props.votes >= 3) {
+    } else if (this.props.votes >= 2) {
       return "em em-neutral_face";
     } else if (this.props.votes >= 0) {
       return "em em-confused";

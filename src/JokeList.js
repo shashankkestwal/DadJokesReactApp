@@ -14,7 +14,6 @@ export default class Joke_list extends React.Component {
     this.state = { jokes: JSON.parse(window.localStorage.getItem("jokes") || "[]"),
     loading: false};
     this.seenJokes = new Set(this.state.jokes.map(j=>j.joke))
-    console.log(this.seenJokes);
   }
   handleClick() {
     this.setState({loading: true}, this.getJokes);
@@ -26,30 +25,46 @@ export default class Joke_list extends React.Component {
     }  
   }
   async getJokes(){
-    this.setState({loading: true})
-    let jokes = [];
-    while(jokes.length < this.props.numberJokes) {
-      let res = await axios.get(`https://icanhazdadjoke.com/`, 
-          {headers:{ Accept: "application/json"}});
-      jokes.push({id:uuid(),joke : res.data.joke, votes: 0});
+    try{
+      this.setState({loading: true})
+      let jokes = [];
+      while(jokes.length < this.props.numberJokes) {
+        let res = await axios.get(`https://icanhazdadjoke.com/`, 
+            {headers:{ Accept: "application/json"}});
+        if(!this.seenJokes.has(res.data.joke)) {
+          jokes.push({id:uuid(),joke : res.data.joke, votes: 0});
+        } else {
+          console.log("Found duplicate")
+          console.log(res.data.joke)
+        }
+      }
+      jokes = [...this.state.jokes, ...jokes]
+      jokes = jokes.sort((a, b)=> b.votes - a.votes)
+      this.setState(st=>({
+        loading: false,
+        jokes: jokes
+      }),
+        ()=> {
+          
+          window.localStorage.setItem("jokes", JSON.stringify(this.state.jokes))
+        }
+      );
+      window.localStorage.setItem(
+        "jokes",
+        JSON.stringify(jokes))
+    } catch (e) {
+      alert(e);
+      this.setState({ loading:false });
     }
-    this.setState(st=>({
-      loading: false,
-      jokes: [...st.jokes, ...jokes]
-    }),
-      ()=> window.localStorage.setItem("jokes", JSON.stringify(this.state.jokes))
-    );
-    window.localStorage.setItem(
-      "jokes",
-      JSON.stringify(jokes))
   }
 
-  handleVote(id, delta) {
+  handleVote(id, change) {
+    // -1 for downvote and +1 for upvote 
     this.setState(
       st => ({
         loading: false,
         jokes: st.jokes.map(j =>
-          j.id === id ? { ...j, votes: j.votes + delta } : j
+          j.id === id ? { ...j, votes: j.votes + change } : j
         )
       }), 
       ()=> window.localStorage.setItem("jokes", JSON.stringify(this.state.jokes))
@@ -64,6 +79,7 @@ export default class Joke_list extends React.Component {
             </div>
             )
     }
+    
 
     return (
       <div className="JokeList">
