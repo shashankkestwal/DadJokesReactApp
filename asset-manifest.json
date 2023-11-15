@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/DadJokesReactApp/static/css/main.9319a46b.css",
+    "main.js": "/DadJokesReactApp/static/js/main.ce47dcf4.js",
+    "static/js/787.b0a5a3f9.chunk.js": "/DadJokesReactApp/static/js/787.b0a5a3f9.chunk.js",
+    "index.html": "/DadJokesReactApp/index.html",
+    "main.9319a46b.css.map": "/DadJokesReactApp/static/css/main.9319a46b.css.map",
+    "main.ce47dcf4.js.map": "/DadJokesReactApp/static/js/main.ce47dcf4.js.map",
+    "787.b0a5a3f9.chunk.js.map": "/DadJokesReactApp/static/js/787.b0a5a3f9.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.9319a46b.css",
+    "static/js/main.ce47dcf4.js"
+  ]
+}
